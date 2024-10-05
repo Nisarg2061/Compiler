@@ -1,7 +1,5 @@
 lexicalTest:
-	cd lexical
-	make test
+	@cd lexical &&	make test
 
 lexicalBuild:
-	cd lexical
-	make build
+	@cd lexical && make build

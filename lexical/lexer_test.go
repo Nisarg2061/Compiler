@@ -5,17 +5,11 @@ import (
 	"testing"
 )
 
-func TestLexerKeywords(t *testing.T) {
-	input := "if else "
+// Helper function to compare actual tokens with expected ones and report errors
+func compareTokens(t *testing.T, input string, expectedTokens []Token) {
 	lexer := NewLexer(input)
-
-	expectedTokens := []Token{
-		{Type: TokenKeyword, Value: "if"},
-		{Type: TokenKeyword, Value: "else"},
-		{Type: TokenEOF, Value: ""},
-	}
-
 	var actualTokens []Token
+
 	for {
 		token := lexer.GetNextToken()
 		actualTokens = append(actualTokens, token)
@@ -25,56 +19,58 @@ func TestLexerKeywords(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(expectedTokens, actualTokens) {
-		t.Errorf("Expected tokens %v, got %v", expectedTokens, actualTokens)
+		t.Errorf("For input %q, expected tokens %v, but got %v", input, expectedTokens, actualTokens)
 	}
 }
 
-func TestLexerIdentifiersAndNumbers(t *testing.T) {
-	input := "var1 123 "
-	lexer := NewLexer(input)
-
-	expectedTokens := []Token{
-		{Type: TokenIdentifier, Value: "var1"},
-		{Type: TokenNumber, Value: "123"},
-		{Type: TokenEOF, Value: ""},
+func TestLexer(t *testing.T) {
+	tests := []struct {
+		name           string
+		input          string
+		expectedTokens []Token
+	}{
+		{
+			name:  "Keywords",
+			input: "if else ",
+			expectedTokens: []Token{
+				{Type: TokenKeyword, Value: "if"},
+				{Type: TokenKeyword, Value: "else"},
+				{Type: TokenEOF, Value: ""},
+			},
+		},
+		{
+			name:  "Identifiers and Numbers",
+			input: "var1 123 ",
+			expectedTokens: []Token{
+				{Type: TokenIdentifier, Value: "var1"},
+				{Type: TokenNumber, Value: "123"},
+				{Type: TokenEOF, Value: ""},
+			},
+		},
+		{
+			name:  "Operators",
+			input: "+ * - /",
+			expectedTokens: []Token{
+				{Type: TokenOperator, Value: "+"},
+				{Type: TokenOperator, Value: "*"},
+				{Type: TokenOperator, Value: "-"},
+				{Type: TokenOperator, Value: "/"},
+				{Type: TokenEOF, Value: ""},
+			},
+		},
+		{
+			name:  "Empty Input",
+			input: "",
+			expectedTokens: []Token{
+				{Type: TokenEOF, Value: ""},
+			},
+		},
 	}
 
-	var actualTokens []Token
-	for {
-		token := lexer.GetNextToken()
-		actualTokens = append(actualTokens, token)
-		if token.Type == TokenEOF {
-			break
-		}
-	}
-
-	if !reflect.DeepEqual(expectedTokens, actualTokens) {
-		t.Errorf("Expected tokens %v, got %v", expectedTokens, actualTokens)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			compareTokens(t, tt.input, tt.expectedTokens)
+		})
 	}
 }
 
-func TestLexerOperators(t *testing.T) {
-	input := "+ * - /"
-	lexer := NewLexer(input)
-
-	expectedTokens := []Token{
-		{Type: TokenOperator, Value: "+"},
-		{Type: TokenOperator, Value: "*"},
-		{Type: TokenOperator, Value: "-"},
-		{Type: TokenOperator, Value: "/"},
-		{Type: TokenEOF, Value: ""},
-	}
-
-	var actualTokens []Token
-	for {
-		token := lexer.GetNextToken()
-		actualTokens = append(actualTokens, token)
-		if token.Type == TokenEOF {
-			break
-		}
-	}
-
-	if !reflect.DeepEqual(expectedTokens, actualTokens) {
-		t.Errorf("Expected tokens %v, got %v", expectedTokens, actualTokens)
-	}
-}

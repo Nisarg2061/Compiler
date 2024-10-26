@@ -2,7 +2,6 @@
 
 ## Languages used: 
 - Go
-- C++
 - Python
 
 ## Steps to run:

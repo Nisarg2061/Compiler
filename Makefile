@@ -1,11 +1,10 @@
-lexer:
-	@cd runner && go run main.go lexer
+down:
+	@sudo docker-compose down
 
-semantic:
-	@cd runner && go run main.go semantic
+up:
+	@sudo docker-compose up --force-recreate --no-deps -d
 
-3ac:
-	@cd runner && go run main.go 3ac
+start: down up
 
 run:
 	@cd runner && go run main.go

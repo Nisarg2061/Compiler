@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ./runner
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./website
+    ports:
+      - "5099:5099"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,5 +1,11 @@
-lexicalTest:
-	@cd lexical &&	make test
+lexer:
+	@cd runner && go run main.go lexer
 
-lexicalBuild:
-	@cd lexical && make build
+semantic:
+	@cd runner && go run main.go semantic
+
+3ac:
+	@cd runner && go run main.go 3ac
+
+run:
+	@cd runner && go run main.go

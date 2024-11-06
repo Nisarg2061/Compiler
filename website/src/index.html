@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles.css" rel="stylesheet">
+    <title>Compiler Output Viewer</title>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Compiler Output Viewer</h1>
+        <div class="button-group">
+            <button onclick="fetchLexer()">Get Lexer Output</button>
+            <button onclick="fetchSemantic()">Get Semantic Output</button>
+            <button onclick="fetch3ac()">Get 3AC Output</button>
+            <button onclick="fetchAll()">Get All Outputs</button>
+        </div>
+        <div class="upload-section">
+            <!-- File upload section -->
+            <input type="file" id="fileUpload" />
+            <button class="upload-button" onclick="uploadFile()">Upload File</button>
+        </div>
+        <div id="output" class="output"></div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

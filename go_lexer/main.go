@@ -1,6 +1,10 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
 	"unicode"
 )
 
@@ -72,7 +76,7 @@ func (l *Lexer) handleIdentifier() Token {
 // GetNextToken retrieves the next token from the input.
 func (l *Lexer) GetNextToken() Token {
 	for l.currentChar != 0 {
-		if unicode.IsSpace(rune(l.currentChar)) {
+		if unicode.IsSpace(l.currentChar) {
 			l.advance()
 			continue
 		}
@@ -85,7 +89,7 @@ func (l *Lexer) GetNextToken() Token {
 			return l.handleNumber()
 		}
 
-		if l.currentChar == '+' || l.currentChar == '*' || l.currentChar == '-' || l.currentChar == '/' {
+		if l.currentChar == '=' || l.currentChar == '+' || l.currentChar == '*' || l.currentChar == '-' || l.currentChar == '/' {
 			op := string(l.currentChar)
 			l.advance()
 			return Token{Type: TokenOperator, Value: op}
@@ -94,7 +98,7 @@ func (l *Lexer) GetNextToken() Token {
 		l.advance() // advance to the next character
 	}
 
-	return Token{Type: TokenEOF, Value: ""}
+	return Token{Type: TokenEOF, Value: ";"}
 }
 
 // handleNumber processes numbers (integers for simplicity).
@@ -102,12 +106,68 @@ func (l *Lexer) handleNumber() Token {
 	start := l.position - 1
 	for isDigit(l.currentChar) {
 		l.advance()
-		if unicode.IsSpace(rune(l.currentChar)) {
-			break
-		}
 	}
 	l.position-- // Move back to the last digit of the number
 	value := l.input[start:l.position]
 
 	return Token{Type: TokenNumber, Value: value}
+}
+
+func main() {
+	// Open the sample.txt file
+	file, err := os.Open("sample.txt")
+	if err != nil {
+		log.Fatalf("Failed to open file: %s", err)
+	}
+	defer file.Close()
+
+	// Read the file contents
+	scanner := bufio.NewScanner(file)
+	var input string
+	for scanner.Scan() {
+		input += scanner.Text() + " " // Concatenate each line with a space
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatalf("Error reading file: %s", err)
+	}
+
+	// Create the lexer using the input from the file
+	lexer := NewLexer(input)
+
+	// Open the output file for writing tokens
+	outputFile, err := os.Create("./tokens.txt")
+	if err != nil {
+		log.Fatalf("Failed to create tokens file: %s", err)
+	}
+	defer outputFile.Close()
+
+	writer := bufio.NewWriter(outputFile)
+
+	// Write tokens to file
+	for {
+		token := lexer.GetNextToken()
+		fmt.Fprintf(writer, "Type: %s, Value: %s\n", token.Type, token.Value)
+		if token.Type == TokenEOF {
+			break
+		}
+	}
+	writer.Flush() // Ensure all buffered data is written to the file
+
+	// Print the contents of tokens.txt
+	fmt.Println("Tokens:")
+	tokensFile, err := os.Open("./tokens.txt")
+	if err != nil {
+		log.Fatalf("Failed to open tokens.txt: %s", err)
+	}
+	defer tokensFile.Close()
+
+	tokensScanner := bufio.NewScanner(tokensFile)
+	for tokensScanner.Scan() {
+		fmt.Println(tokensScanner.Text())
+	}
+
+	if err := tokensScanner.Err(); err != nil {
+		log.Fatalf("Error reading tokens file: %s", err)
+	}
 }

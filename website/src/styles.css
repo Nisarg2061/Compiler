@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #eef2f3;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    margin: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 250px; /* Set width for file input */
+}
+
+.upload-button {
+    background-color: #27ae60; /* Green color for upload button */
+}
+
+.upload-button:hover {
+    background-color: #219653; /* Darker green on hover */
+}
+
+.output {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    white-space: pre-wrap; /* Ensures that multiline output is displayed correctly */
+    height: 500px;
+    width: 500px;
+    overflow-y: auto; /* Adds scroll if content exceeds max height */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

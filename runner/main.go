@@ -11,7 +11,7 @@ import (
 
 // Function to run the lexer and return the output as a string
 func runLexer() (string, error) {
-	cmd := exec.Command("go", "run", "../go_lexer/main.go")
+	cmd := exec.Command("go", "run", "./src/go_lexer/main.go")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", fmt.Errorf("error executing lexical analysis: %s", err)
@@ -21,7 +21,7 @@ func runLexer() (string, error) {
 
 // Function to run semantic analysis and return the output as a string
 func runSemantic() (string, error) {
-	cmd := exec.Command("python3", "../python_parser/semantic_analyzer.py")
+	cmd := exec.Command("python3", "./src/python_parser/semantic_analyzer.py")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", fmt.Errorf("error executing semantic analysis: %s", err)
@@ -31,7 +31,7 @@ func runSemantic() (string, error) {
 
 // Function to run the 3AC generation and return the output as a string
 func run3ac() (string, error) {
-	cmd := exec.Command("python3", "../3ac/3ac.py")
+	cmd := exec.Command("python3", "./src/3ac/3ac.py")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", fmt.Errorf("error executing 3AC generation: %s", err)

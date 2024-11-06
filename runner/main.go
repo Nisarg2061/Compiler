@@ -67,7 +67,10 @@ func uploadFile(c *fiber.Ctx) error {
 func main() {
 	// Initialize a new Fiber app
 	app := fiber.New()
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Or specify "http://frontend:5099"
+		AllowMethods: "POST, GET, OPTIONS",
+	}))
 
 	// Route for lexer
 	app.Get("/lexer", func(c *fiber.Ctx) error {

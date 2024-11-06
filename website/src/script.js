@@ -1,6 +1,6 @@
 // Function to fetch Lexer output
 function fetchLexer() {
-  fetch("http://localhost:4000/lexer")
+  fetch("http://cb.bynisarg.in/lexer")
     .then((response) => response.json())
     .then((data) => {
       displayOutput(data.output || data.error);
@@ -12,7 +12,7 @@ function fetchLexer() {
 
 // Function to fetch Semantic output
 function fetchSemantic() {
-  fetch("http://localhost:4000/semantic")
+  fetch("http://cb.bynisarg.in/semantic")
     .then((response) => response.json())
     .then((data) => {
       displayOutput(data.output || data.error);
@@ -24,7 +24,7 @@ function fetchSemantic() {
 
 // Function to fetch 3AC output
 function fetch3ac() {
-  fetch("http://localhost:4000/3ac")
+  fetch("http://cb.bynisarg.in/3ac")
     .then((response) => response.json())
     .then((data) => {
       displayOutput(data.output || data.error);
@@ -36,7 +36,7 @@ function fetch3ac() {
 
 // Function to fetch all outputs
 function fetchAll() {
-  fetch("http://localhost:4000/all")
+  fetch("http://cb.bynisarg.in/all")
     .then((response) => response.json())
     .then((data) => {
       const output = `
@@ -70,7 +70,7 @@ function uploadFile() {
   const formData = new FormData();
   formData.append("file", file);
 
-  fetch("http://localhost:4000/upload", {
+  fetch("http://cb.bynisarg.in/upload", {
     method: "POST",
     body: formData,
   })

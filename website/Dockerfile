@@ -3,6 +3,9 @@ FROM golang:alpine
 
 WORKDIR /app
 
+# Install necessary packages, including Python
+RUN apk add --no-cache python3 py3-pip
+
 # Copy the source code
 COPY . .
 

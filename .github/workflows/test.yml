@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Perform Tests
-      run: make lexicalTest
+      run: make run
 
   build:
     runs-on: ubuntu-latest
@@ -20,4 +20,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: make lexicalBuild
+      run: make run

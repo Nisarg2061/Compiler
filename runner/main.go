@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -40,6 +41,7 @@ func run3ac() (string, error) {
 }
 
 // Route to handle file uploads
+// Route to handle file uploads
 func uploadFile(c *fiber.Ctx) error {
 	// Get the file from the form data
 	file, err := c.FormFile("file")
@@ -49,8 +51,17 @@ func uploadFile(c *fiber.Ctx) error {
 		})
 	}
 
-	// Create or open the "sample.txt" file
+	// Check if the file has a .txt extension
+	if filepath.Ext(file.Filename) != ".txt" {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "Only .txt files are allowed",
+		})
+	}
+
+	// Define the destination path for the file
 	dst := "./sample.txt"
+
+	// Save the file to the specified destination
 	if err := c.SaveFile(file, dst); err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"error": fmt.Sprintf("Failed to save file: %s", err.Error()),

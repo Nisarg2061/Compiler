@@ -19,7 +19,7 @@ COPY . .
 RUN go build -o main .
 
 # Expose port 3000 for the Fiber app
-EXPOSE 3000
+EXPOSE 4000
 
 # Run the executable
 CMD ["./main"]

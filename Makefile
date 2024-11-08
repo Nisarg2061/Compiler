@@ -2,6 +2,7 @@ stop:
 	@sudo docker-compose down
 
 up:
+	@sudo docker-compose build
 	@sudo docker-compose up --force-recreate --no-deps -d
 
 start: stop up

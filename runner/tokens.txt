@@ -1,17 +1,5 @@
-Type: IDENTIFIER, Value: x
-Type: OPERATOR, Value: =
-Type: IDENTIFIER, Value: a
-Type: OPERATOR, Value: *
-Type: IDENTIFIER, Value: b
-Type: OPERATOR, Value: +
-Type: IDENTIFIER, Value: c
-Type: IDENTIFIER, Value: y
-Type: OPERATOR, Value: =
-Type: IDENTIFIER, Value: a
-Type: OPERATOR, Value: +
-Type: IDENTIFIER, Value: b
-Type: OPERATOR, Value: *
-Type: IDENTIFIER, Value: c
-Type: OPERATOR, Value: -
-Type: IDENTIFIER, Value: d
-Type: EOF, Value: ;
+Type: KEYWORD, Value: int, Line: 1, Column: 5
+Type: IDENTIFIER, Value: a, Line: 1, Column: 7
+Type: OPERATOR, Value: =, Line: 1, Column: 9
+Type: FLOAT, Value: 1.2, Line: 2, Column: 1
+Type: EOF, Value: , Line: 2, Column: 1

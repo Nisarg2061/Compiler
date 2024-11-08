@@ -6,8 +6,8 @@ class ThreeAddressCodeGenerator:
         self.quadruples = []
         self.triples = []
         self.indirect_triples = []
-        self.indirect_table = []
-        self.temp_map = {}  # Dictionary to store temp variable mappings
+        self.temp_map = {}
+        self.temp_indices = []
 
     def new_temp(self):
         """Generate a new temporary variable name."""
@@ -27,58 +27,73 @@ class ThreeAddressCodeGenerator:
         op = operators.pop()
         right = values.pop()
         left = values.pop()
+
+        # Generate a new temporary variable name for the result
         result = self.new_temp()
 
-        # Generate quadruple
+        # Generate quadruple with T1, T2 style temporaries
         self.quadruples.append((op, left, right, result))
-        self.triples.append((op, left, right))
-        index = len(self.triples) - 1
-        self.indirect_table.append(index)
-        self.indirect_triples.append((op, left, right))
 
-        # Track the temp variable mappings
+        # Generate triples using the temporary variable directly for assignment
+        self.triples.append((op, left, right))
+
+        # Store the index of this triple in the indirect triples list
+        index = len(self.triples) - 1
+        self.indirect_triples.append(index)
+
+        # Append the temporary variable result to the values stack
+        values.append(result)
+
+        # Track temp variable mappings for debugging
         self.temp_map[result] = f"{left} {op} {right}"
 
-        values.append(result)
+        # Store the index of the temporary variable (index for indirect triples)
+        self.temp_indices.append(result)
 
     def to_3ac(self, expression):
         """Convert an expression to 3AC."""
-        # Extract the variable and expression part: x = a * b + c * (a * B)
         var, expr = expression.split('=')
         var = var.strip()
         expr = expr.strip()
+
+        # Skip the declaration keywords like 'int', 'float', 'string'
+        if expr.startswith('int') or expr.startswith('float') or expr.startswith('string'):
+            return  # Ignore lines with these keywords
 
         tokens = re.findall(r'[a-zA-Z0-9]+|[()+\-*/]', expr)
         values = []
         operators = []
 
         for token in tokens:
-            if token.isalnum():  # If it's an operand (variable or number)
+            if token.isalnum():
                 values.append(token)
             elif token == '(':
                 operators.append(token)
             elif token == ')':
                 while operators and operators[-1] != '(':
                     self.apply_operator(operators, values)
-                operators.pop()  # Pop '('
-            else:  # Operator
-                # Handle precedence correctly by applying operators
+                operators.pop()
+            else:
                 while (operators and operators[-1] != '(' and
                        self.precedence(operators[-1]) >= self.precedence(token)):
                     self.apply_operator(operators, values)
                 operators.append(token)
 
-        # Apply the remaining operators
         while operators:
             self.apply_operator(operators, values)
 
-        # Assign the result to the variable
+        # Final result for the expression, assign it to the variable
         result = values.pop()
+
+        # Quadruple assignment with the actual temp variable
         self.quadruples.append(('=', result, '', var))
+
+        # Triples assignment directly using the temp variable (e.g., T1)
         self.triples.append(('=', result, ''))
+
+        # Indirect triples assignment using the index (last entry), but without parentheses
         index = len(self.triples) - 1
-        self.indirect_table.append(index)
-        self.indirect_triples.append(('=', result, ''))
+        self.indirect_triples.append(index)
 
         # Track the assignment in the temp variable map
         self.temp_map[var] = result
@@ -97,13 +112,17 @@ class ThreeAddressCodeGenerator:
 
         print("\nIndirect Triples Table:")
         print("Index\tOperator\tArg1\tArg2")
-        for i in self.indirect_table:
-            op, arg1, arg2 = self.indirect_triples[i]
-            print(f"{i}\t{op}\t\t{arg1}\t{arg2}")
+        for i, index in enumerate(self.indirect_triples):
+            op, arg1, arg2 = self.triples[index]
+            # In indirect triples, use the index values from temp_indices
+            indirect_arg1 = self.temp_indices.index(arg1) if arg1 in self.temp_indices else arg1
+            indirect_arg2 = self.temp_indices.index(arg2) if arg2 in self.temp_indices else arg2
+            print(f"{i}\t{op}\t\t({indirect_arg1})\t({indirect_arg2})")
 
         print("\nTemporary Variables Mapping:")
         for temp_var, expression in self.temp_map.items():
             print(f"{temp_var} = {expression}")
+
 
 # Main loop to read expressions from sample.txt
 def main():
@@ -116,10 +135,9 @@ def main():
             expressions = []
             for line in lines:
                 expression = line.strip()
-                if expression:  # Avoid empty lines
+                if expression:
                     expressions.append(expression)
 
-            # Process each expression
             for expression in expressions:
                 try:
                     generator.to_3ac(expression)
